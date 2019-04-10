@@ -1,48 +1,54 @@
+import { error } from "util";
 const LineByLine  = require('n-readlines');
 
 export class AssemblyFileParser {
     public readonly file: string;
     public readonly newFile: string;
     private readonly liner;
-    public line: string | boolean; // blah
+    public line: string; // blah
     private lineNumber: number;
     
     constructor(file: string) {
         this.file = file;
         this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.asm';
         this.line = '';
-        this.lineNumber = 0;
         this.liner = new LineByLine(file);
-        this.advance();
+        this.lineNumber = 0;
     }
 
     public hasMoreCommands(): Boolean {
-     return !!this.line;   
+     return !!this.line || this.lineNumber === 0;   
     }
 
     public advance(): void {
         this.line = this.liner.next();
+        console.log('this.line: ' + this.line);
         this.lineNumber++;
     }
 
     public commandType(): 'A_COMMAND' | 'C_COMMAND' {
-        return 'A_COMMAND'; // TODO:
+        switch(this.line.substr(0, 1)) {
+            case('0'):
+                return 'C_COMMAND';
+            case('1'):
+                return 'A_COMMAND';
+            default:
+                throw error('fix this');
+        }
+            
     }
 
     // TODO: symbol: string
 
     public dest(): string {
-        // TODO
-        return ''; 
+        return this.line.substring(10, 12); 
     }
     
     public comp(): string {
-        // TODO:
-        return '';
+        return this.line.substring(3, 9);
     }
 
-    public jump(): string {
-        // TODO: 
-        return '';
+    public jump(): string { 
+        return this.line.substring(13, 15);
     }
 }
