@@ -15,7 +15,11 @@ function main(): void {
 
     while(assemblyFileParser.hasMoreCommands()) {
         assemblyFileParser.advance();
-        data += assembler.translateAssemblyToMachineInstruction(assemblyFileParser.line.toString()).join("") + "\n";
+
+        // TODO: yuck
+        if (assemblyFileParser.line) {
+            data += assembler.translateAssemblyToMachineInstruction(assemblyFileParser.line.toString()).join("") + "\n";
+        }
     }
 
     
