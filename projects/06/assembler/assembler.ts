@@ -8,7 +8,6 @@ export class Asssembler {
         }
         
         switch(it) {
-            case(undefined):
             case(''):
                 return '000';
             case('M'):
@@ -38,7 +37,6 @@ export class Asssembler {
         
         switch(it) {
             case(''):
-            case(undefined):
                 return('0000000');
             case('0'):
                 return '0101010';
@@ -93,7 +91,6 @@ export class Asssembler {
             case('D|M'):
                 return '1010101';
             default:
-                console.log(value.length);
                 throw error('comp recieved unexpected value: ' + value);
         }
     }
@@ -105,7 +102,6 @@ export class Asssembler {
         }
         
         switch(it) {
-            case(undefined):
             case(''):
                 return '000';
             case('JGT'):

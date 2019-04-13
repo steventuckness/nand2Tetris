@@ -7,17 +7,25 @@ export class AssemblyFileParser {
     private readonly liner;
     public line: string; // blah
     private lineNumber: number;
+    private totalLines: number;
     
     constructor(file: string) {
         this.file = file;
-        this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.txt';
+        this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.hack';
         this.line = '';
+        this.liner = new LineByLine(file);
+        this.totalLines = 0;
+
+        while (this.liner.next()) {
+            this.totalLines++;
+        }
+
         this.liner = new LineByLine(file);
         this.lineNumber = 0;
     }
 
     public hasMoreCommands(): Boolean {
-     return !!this.line || this.lineNumber === 0;   
+        return this.lineNumber <= this.totalLines-1;
     }
 
     public advance(): void {
@@ -85,7 +93,7 @@ export class AssemblyFileParser {
         }        
     }
 
-    private scrubComment(value: string): string {
+    private scrubComment(value: string): string {     
         if (!value) {
             return value;
         }

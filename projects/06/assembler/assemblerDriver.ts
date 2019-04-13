@@ -12,18 +12,16 @@ function main(): void {
 
     const assemblyFileParser = new AssemblyFileParser(file);
     const assembler = new Asssembler();
- 
+
     while(assemblyFileParser.hasMoreCommands()) {
         assemblyFileParser.advance();
-        if (!assemblyFileParser.line) {
-            break;
-        }
-
-        // blank line or line starts with a // then skip
-        if (!assemblyFileParser.line.toString().replace(/\s/g, '').length || assemblyFileParser.line.toString().substring(0, 2) === "//") {
+              
+        // TODO: this isn't currently handling blank lines very well...so when we do the prescan count the number of lines check which line number we
+        // are on instead for the hasMoreCommands check.
+        if (!assemblyFileParser.line || isBlankLine(assemblyFileParser) || isCommentLine(assemblyFileParser)) {
             continue;
         }
-     
+ 
         if (assemblyFileParser.commandType() === 'A_COMMAND') {
             data += assemblyFileParser.symbol() + "\n";
             console.log(assemblyFileParser.symbol());
@@ -45,4 +43,12 @@ function main(): void {
             console.log("Successfully written to File");
         }
     });
+}
+
+function isBlankLine(assemblyFileParser): boolean {
+    return !assemblyFileParser.line.toString().replace(/\s/g, '').length;
+}
+
+function isCommentLine(assemblyFileParser): boolean {
+    return assemblyFileParser.line.toString().substring(0, 2) === "//"
 }
