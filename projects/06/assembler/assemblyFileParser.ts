@@ -10,7 +10,7 @@ export class AssemblyFileParser {
     
     constructor(file: string) {
         this.file = file;
-        this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.asm';
+        this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.txt';
         this.line = '';
         this.liner = new LineByLine(file);
         this.lineNumber = 0;

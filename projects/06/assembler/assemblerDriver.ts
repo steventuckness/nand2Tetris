@@ -19,10 +19,11 @@ function main(): void {
             break;
         }
 
-        if (!assemblyFileParser.line.toString().replace(/\s/g, '').length) {
+        // blank line or line starts with a // then skip
+        if (!assemblyFileParser.line.toString().replace(/\s/g, '').length || assemblyFileParser.line.toString().substring(0, 2) === "//") {
             continue;
         }
-
+     
         if (assemblyFileParser.commandType() === 'A_COMMAND') {
             data += assemblyFileParser.symbol() + "\n";
             console.log(assemblyFileParser.symbol());

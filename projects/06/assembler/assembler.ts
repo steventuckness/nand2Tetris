@@ -2,8 +2,12 @@ import { error } from "util";
 
 export class Asssembler {
     public dest(value: string): string {
-        switch(value) {
-            case(null):
+        let it = '';
+        if (value) {
+            it = value.trim();           
+        }
+        
+        switch(it) {
             case(undefined):
             case(''):
                 return '000';
@@ -27,8 +31,12 @@ export class Asssembler {
     }
 
     public comp(value: string): string {
-        switch(value.trim()) {
-            case(null):
+        let it = '';
+        if (value) {
+            it = value.trim();           
+        }
+        
+        switch(it) {
             case(''):
             case(undefined):
                 return('0000000');
@@ -67,9 +75,9 @@ export class Asssembler {
             case('D+M'):
                 return '1000010';
             case('D-A'):
-                return '01010011';
+                return '0000111';
             case('D-M'):
-                return '11010011';
+                return '1010011';
             case('A-D'):
                 return '0000111';
             case('M-D'):
@@ -89,8 +97,12 @@ export class Asssembler {
     }
 
     public jump(value: string): string {
-        switch(value) {
-            case(null):
+        let it = '';
+        if (value) {
+            it = value.trim();           
+        }
+        
+        switch(it) {
             case(undefined):
             case(''):
                 return '000';
