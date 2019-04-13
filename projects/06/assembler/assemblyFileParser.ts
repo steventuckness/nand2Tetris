@@ -22,33 +22,64 @@ export class AssemblyFileParser {
 
     public advance(): void {
         this.line = this.liner.next();
-        console.log('this.line: ' + this.line);
         this.lineNumber++;
     }
 
-    public commandType(): 'A_COMMAND' | 'C_COMMAND' {
-        switch(this.line.substr(0, 1)) {
-            case('0'):
-                return 'C_COMMAND';
-            case('1'):
-                return 'A_COMMAND';
-            default:
-                throw error('fix this');
+    public symbol(): string {
+        if (this.commandType() === 'A_COMMAND') {        
+            let binaryNumber = Number(this.line.toString().replace("@", "")).toString(2);
+            let length = binaryNumber.length;
+            let leadingZerosToAdd = 15;
+            let leadingZeros = '';
+            for (let i = 0; i < leadingZerosToAdd - length; i++) {
+                leadingZeros += '0';
+            }
+            return '0' + leadingZeros + binaryNumber;  
+
+        } else {
+            throw new error("we shouldn't have called symbol for this");
         }
-            
     }
 
-    // TODO: symbol: string
+    public commandType(): 'A_COMMAND' | 'C_COMMAND' {
+        let a = this.line.toString().substring(0, 1);
+        if (a === "@"){
+            return 'A_COMMAND';
+        } else {
+            return 'C_COMMAND';
+        }    
+    }
 
     public dest(): string {
-        return this.line.substring(10, 12); 
+        let it = this.line.toString().indexOf('=');
+        if (it !== -1) {
+            return this.line.toString().substring(0, it-1);
+        } else {
+            return null;
+        }
+        
     }
     
     public comp(): string {
-        return this.line.substring(3, 9);
+        let it = this.line.toString().indexOf("=");
+        if (it !== -1) {
+            return this.line.toString().substring(it+1, this.line.length);
+        } else {
+            let it = this.line.toString().indexOf(";");
+            if (it !== -1) {
+                return this.line.toString().substring(0, it-1);
+            } else {
+                return null;
+            }
+        }
     }
 
     public jump(): string { 
-        return this.line.substring(13, 15);
+        let it = this.line.toString().indexOf(';');
+        if (it !== -1) {
+            return this.line.toString().substring(it+1, this.line.length);
+        } else {
+            return null;
+        }        
     }
 }

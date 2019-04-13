@@ -1,37 +1,46 @@
 import { Asssembler } from "./assembler";
 import { AssemblyFileParser } from "./assemblyFileParser";
 
-// assembler for week 6 of nand to tetris...
-
 main();
 
-function main(): void {
+// tsc
+// node assemblerDriver.js basicFile.txt
+
+function main(): void { 
     var file = process.argv[2];
     var data = '';
     
     const assemblyFileParser = new AssemblyFileParser(file);
     const assembler = new Asssembler();
-    const fs = require('fs');
-
+ 
     while(assemblyFileParser.hasMoreCommands()) {
         assemblyFileParser.advance();
-
-        // TODO: yuck
-        if (assemblyFileParser.line) {
-            data += assembler.translateAssemblyToMachineInstruction(assemblyFileParser.line.toString()).join("") + "\n";
+        if (!assemblyFileParser.line) {
+            return;
         }
-    }
 
-    
-    fs.writeFileSync(assemblyFileParser.newFile, data, function (err: any, data: any) {
-        if (err)
-            console.log(err);
-        console.log("Successfully written to File");
+        if (assemblyFileParser.commandType() === 'A_COMMAND') {
+            data += assemblyFileParser.symbol();
+            console.log(assemblyFileParser.symbol() + "\n");
+        } else if (assemblyFileParser.commandType() === 'C_COMMAND') {
+            let start = '111';
+            let jump = assembler.jump(assemblyFileParser.jump());    
+            let comp = assembler.comp(assemblyFileParser.comp());
+            let dest = assembler.dest(assemblyFileParser.dest());
+            data += start + comp + dest + jump + "\n";
+            console.log(start + comp + dest + jump + "\n");
+        }        
+    } // end while
+
+    data  = "monkey";
+
+    console.log('about to start writing file');
+    var fs = require("fs");
+    fs.writeFile(assemblyFileParser.newFile, data, function (err: any, data: any) {
+        if (err) {
+            console.log('error: ' + err);
+        } else {
+            console.log("Successfully written to File");
+        }
     });
 }
-
-
-
-
-
-
