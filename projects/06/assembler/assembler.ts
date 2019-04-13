@@ -56,6 +56,8 @@ export class Asssembler {
                 return '0001101';
             case('!A'):
                 return '0110001';
+            case('!M'):
+                return '1110001'    
             case('-M'):
                 return '1110011';
             case('D+1'):
