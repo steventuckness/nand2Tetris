@@ -1,90 +1,115 @@
-export type bit = 0 | 1;
-export type instructions = Array<bit>;
-type comp = Array<bit>;
-
-let compA: Array<string> = ['0','1', '-1', 'D', 'A', '!D', '!A', '-D+1', 'A+1', 'D+A', 'D-A', 'A-D', 'D&A', 'D|A'];
-let compb: Array<string> = ['', 'M', '!M', '-M', 'M+1', 'D+M', 'D-M', 'M-D', 'D&M', 'D|M'];
-let compTable: Array<string>[][]
-
-let compT: []
+import { error } from "util";
 
 export class Asssembler {
-    
-    public machineInstructions: instructions;
-    
-    constructor() {
-        this.machineInstructions = new Array(16);   
-    }
-
-    public translateAssemblyToMachineInstruction(assembly: string): Array<bit> {
-        let instruction: instructions = new Array(16);
-        // TODO: write dst
-        // TODO: write jmp
-        // TODO: write cmd
-
-        // TODO: pre defined symbols
-        // TODO: new symbols
-
-        // TODO: ignore spaces
-        // TODO: ignore comments
-        // TODO: ignore empty lines
-        
-        if (this.isCInstruction(assembly)) {
-            instruction = this.translateCInstruction(assembly);
-        } else {
-            instruction = this.translateAInstruction(assembly.substr(1, 15));
+    public dest(value: string): string {
+        switch(value) {
+            case(null):
+            case(undefined):
+            case(''):
+                return '000';
+            case('M'):
+                return '001';
+            case('D'):
+                return '010';
+            case('MD'):
+                return '011';
+            case('A'):
+                return '100';
+            case('AM'):
+                return '101';
+            case('AD'):
+                return '110';
+            case('AMD'):
+                return '111';
+            default:
+                throw new error('dest recieved unexpected value: ' + value);    
         }
-
-        return instruction;
     }
 
-    private isCInstruction(instruction: string): Boolean {
-        return instruction.indexOf("@") !== 0;
-    }
-
-    private translateAInstruction(number: string): instructions {
-        let translatedInstruction: instructions = new Array(16);
-        translatedInstruction[0] = 0; // is C instructionsm the rest is the decimal
-        
-        // TODO: using Number instead of number seems to be a no no here: 
-        // https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
-        let binaryNumber = Number(number).toString(2); 
-    
-        let translatedInstructionIterator = 15; // start from 1 because 0 is the isC instruction indicator
-    
-        for (var binaryNumberIterator = number.length; binaryNumberIterator >= 0; binaryNumberIterator--) {
-            translatedInstruction[translatedInstructionIterator] = binaryNumber.charAt(binaryNumberIterator) === '1' ? 1 : 0;
-            translatedInstructionIterator--;
+    public comp(value: string): string {
+        switch(value.trim()) {
+            case(null):
+            case(''):
+            case(undefined):
+                return('0000000');
+            case('0'):
+                return '0101010';
+            case('1'):
+                return '0111111';
+            case('-1'):
+                return '0111010';
+            case('D'):
+                return '0001100';
+            case "A":
+                return '0110000';
+            case('M'):
+                return '1110000';
+            case('!D'):
+                return '0001101';
+            case('!A'):
+                return '0110001';
+            case('-M'):
+                return '1110011';
+            case('D+1'):
+                return '0011111';
+            case('A+1'):
+                return '0110111';
+            case('M+1'):
+                return '1110111';
+            case('D-1'):
+                return '0001110';
+            case('A-1'):
+                return '0001110';
+            case('M-1'):
+                return '1001110';
+            case('D+A'):
+                return '0000010';
+            case('D+M'):
+                return '1000010';
+            case('D-A'):
+                return '01010011';
+            case('D-M'):
+                return '11010011';
+            case('A-D'):
+                return '0000111';
+            case('M-D'):
+                return '1000111';
+            case('D&A'):
+                return '0000000';
+            case('D&M'):
+                return '1000000';
+            case('D|A'):
+                return '0010101';
+            case('D|M'):
+                return '1010101';
+            default:
+                console.log(value.length);
+                throw error('comp recieved unexpected value: ' + value);
         }
-    
-        while (translatedInstructionIterator >= 1) {
-            translatedInstruction[translatedInstructionIterator] = 0;
-            translatedInstructionIterator--;
-        }
-      
-        return translatedInstruction;
     }
 
-    private translateCInstruction(instruction: string): instructions {
-        let translatedInstruction: instructions = new Array(16);
-    
-        translatedInstruction[0] = 1;
-        translatedInstruction[1] = 1;
-        translatedInstruction[2] = 1;
-        
-        return translatedInstruction;
-    }
-    
-    private translateComp(assembly: string): comp {
-        let command = assembly.substr(0, assembly.indexOf("="));
-    
-    
-        let translatedComp: comp = new Array(7);
-    
-        return translatedComp;
-    }
-    
-    private  getAbit(command: string): bit {
-        return 0;
+    public jump(value: string): string {
+        switch(value) {
+            case(null):
+            case(undefined):
+            case(''):
+                return '000';
+            case('JGT'):
+                return '001';
+            case('JEQ'):
+                return '010';
+            case('JGE'):
+                return '011';
+            case('JLT'):
+                return '100';
+            case('JNE'):
+                return '101';
+            case('JLE'):
+                return '110';
+            case('JMP'):
+                return '111';
+            default:
+                throw new error('jmp recieved unexpected value: ' + value);
+        }
     }
 }
