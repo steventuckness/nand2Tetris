@@ -21,7 +21,7 @@ export class AssemblyFileParser {
     }
 
     public advance(): void {
-        this.line = this.liner.next();
+        this.line = this.scrubComment(this.liner.next());
         this.lineNumber++;
     }
 
@@ -29,7 +29,7 @@ export class AssemblyFileParser {
         if (this.commandType() === 'A_COMMAND') {    
             let value = this.line.toString().replace("@", "");
             
-            let binaryNumber = Number(this.scrubComment(value)).toString(2);
+            let binaryNumber = Number(value).toString(2);
             let length = binaryNumber.length;
             let leadingZerosToAdd = 15;
             let leadingZeros = '';
@@ -55,7 +55,7 @@ export class AssemblyFileParser {
     public dest(): string {
         let it = this.line.toString().indexOf('=');
         if (it !== -1) {
-            return this.scrubComment(this.line.toString().substring(0, it-1));
+            return this.line.toString().substring(0, it-1);
         } else {
             return null;
         }
@@ -65,11 +65,11 @@ export class AssemblyFileParser {
     public comp(): string {
         let it = this.line.toString().indexOf("=");
         if (it !== -1) {
-            return this.scrubComment(this.line.toString().substring(it+1, this.line.length));
+            return this.line.toString().substring(it+1, this.line.length);
         } else {
             let it = this.line.toString().indexOf(";");
             if (it !== -1) {
-                return this.scrubComment(this.line.toString().substring(0, it-1));
+                return this.line.toString().substring(0, it-1);
             } else {
                 return null;
             }
@@ -86,10 +86,14 @@ export class AssemblyFileParser {
     }
 
     private scrubComment(value: string): string {
-        let commentIndex = value.indexOf("//");
+        if (!value) {
+            return value;
+        }
+        
+        let commentIndex = value.toString().indexOf("//");
         
         if (commentIndex !== -1) {
-            return value.substring(0, commentIndex-1);
+            return value.toString().substring(0, commentIndex-1);
         } else {
             return value;
         }
