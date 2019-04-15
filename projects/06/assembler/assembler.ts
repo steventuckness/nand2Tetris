@@ -2,6 +2,8 @@ import { error } from "util";
 
 export class Asssembler {
     public dest(value: string): string {
+        // console.log('dest recieved: ' + value);
+        
         let it = '';
         if (value) {
             it = value.trim();           
@@ -69,7 +71,7 @@ export class Asssembler {
             case('A-1'):
                 return '0001110';
             case('M-1'):
-                return '1001110';
+                return '1110010';
             case('D+A'):
                 return '0000010';
             case('D+M'):

@@ -63,7 +63,8 @@ export class AssemblyFileParser {
     public dest(): string {
         let it = this.line.toString().indexOf('=');
         if (it !== -1) {
-            return this.line.toString().substring(0, it-1);
+            console.log('dest write ' + this.line.toString().substring(1, it-1));
+            return this.line.toString().substring(1, it-1);
         } else {
             return null;
         }
@@ -77,7 +78,7 @@ export class AssemblyFileParser {
         } else {
             let it = this.line.toString().indexOf(";");
             if (it !== -1) {
-                return this.line.toString().substring(0, it-1);
+                return this.line.toString().substr(0, 1);
             } else {
                 return null;
             }

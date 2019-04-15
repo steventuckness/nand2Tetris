@@ -1,0 +1,14 @@
+{
+  "ProjectFilePath": "c:\\gitrepos\\Coursara\\nand2tetris\\nand2tetris\\projects\\06\\HackAssembler\\HackAssembler\\HackAssembler.csproj",
+  "TargetFramework": "netcoreapp1.1",
+  "TagHelpers": [],
+  "Configuration": {
+    "ConfigurationName": "UnsupportedRazor",
+    "LanguageVersion": "1.0",
+    "Extensions": [
+      {
+        "ExtensionName": "UnsupportedRazorExtension"
+      }
+    ]
+  }
+}
