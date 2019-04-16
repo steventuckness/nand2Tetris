@@ -69,7 +69,7 @@ export class Asssembler {
             case('D-1'):
                 return '0001110';
             case('A-1'):
-                return '0001110';
+                return '0110010';
             case('M-1'):
                 return '1110010';
             case('D+A'):
