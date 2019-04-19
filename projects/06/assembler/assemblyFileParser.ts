@@ -44,7 +44,6 @@ export class AssemblyFileParser {
     }
 
     private convertToBinary16(value: string): string {
-        console.log('convertoBinary16', value);
         let binaryNumber = Number(value.trim()).toString(2);
         let length = binaryNumber.length;
         let leadingZerosToAdd = 15;
