@@ -11,7 +11,7 @@ export class SymbolTable {
     }
 
     public contains(symbol: string): boolean {
-        return !!this.symbolAddresses[symbol];
+        return this.symbolAddresses[symbol] !== undefined;
     }
 
     public getAddress(symbol: string): number {

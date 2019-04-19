@@ -9,15 +9,38 @@ main();
 function main(): void { 
     var file = process.argv[2];
     var data = '';
+    let instructionNumber = 0;
 
     const assemblyFileParser = new AssemblyFileParser(file);
     const assembler = new Asssembler();
 
+    // first pass
+    while(assemblyFileParser.hasMoreCommands()) {
+        assemblyFileParser.advance();
+        
+        if (!assemblyFileParser.line || isBlankLine(assemblyFileParser) || isCommentLine(assemblyFileParser)) {
+            continue;
+        }
+
+        if (assemblyFileParser.commandType() === 'A_COMMAND') {
+            instructionNumber++;
+        } else if (assemblyFileParser.commandType() === 'L_COMMAND') {
+            if (!assemblyFileParser.symbolTable.contains(assemblyFileParser.line.toString().trim())) {
+                let formatted = assemblyFileParser.line.toString().trim().replace("(","").replace(")", ""); 
+                assemblyFileParser.symbolTable.addEntry(formatted, instructionNumber);
+                console.log('adding to symbolTable ',  formatted, instructionNumber);
+            }
+        } else if (assemblyFileParser.commandType() === 'C_COMMAND') {
+            instructionNumber++;
+        }  
+    }
+    assemblyFileParser.reset();
+
+    // second pass
     while(assemblyFileParser.hasMoreCommands()) {
         assemblyFileParser.advance();
               
-        // TODO: this isn't currently handling blank lines very well...so when we do the prescan count the number of lines check which line number we
-        // are on instead for the hasMoreCommands check.
+
         if (!assemblyFileParser.line || isBlankLine(assemblyFileParser) || isCommentLine(assemblyFileParser)) {
             continue;
         }
@@ -25,6 +48,8 @@ function main(): void {
         if (assemblyFileParser.commandType() === 'A_COMMAND') {
             data += assemblyFileParser.symbol() + "\n";
             console.log(assemblyFileParser.symbol());
+        } else if (assemblyFileParser.commandType() === 'L_COMMAND') {
+            // skip
         } else if (assemblyFileParser.commandType() === 'C_COMMAND') {
             let start = '111';
             let jump = assembler.jump(assemblyFileParser.jump());    
@@ -33,7 +58,7 @@ function main(): void {
             data += start + comp + dest + jump + "\n";
             console.log(start + comp + dest + jump);
         }        
-    } // end while
+    }
  
     var fs = require("fs");
     fs.writeFileSync(assemblyFileParser.newFile, data, function (err: any) {
