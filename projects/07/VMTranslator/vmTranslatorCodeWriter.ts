@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { ArithmeticCommands } from './vmTranslatorTypes';
 
 export class VmTranslatorCodeWriter {
     private fileName = '';
@@ -10,7 +11,7 @@ export class VmTranslatorCodeWriter {
 
         console.log(this.fileName);
 
-        fs.writeFileSync(this.fileName, 'test crap');
+        fs.writeFileSync(this.fileName, '');
         fs.appendFileSync(this.fileName, 'test crap 2');
     }
 
@@ -22,7 +23,7 @@ export class VmTranslatorCodeWriter {
 
     /* Writes the assembly code that is the translation of the given 
        arithmetic command. */
-    public writeArithmetic(command: string): void {
+    public writeArithmetic(command: ArithmeticCommands): void {
         // TODO: add type...
     }
 

@@ -1,3 +1,4 @@
+import { ArithmeticCommands, getArithmeticCommands } from './vmTranslatorTypes';
 /* Parser: Handles the parsing of a single .vm file, and encapsulates access 
    to the input code. It reads VM commands, perses them, and provides convenient access to their
    components. In addition, it removes all white space and comments.
@@ -23,6 +24,10 @@ export class VmTranslatorFileParser {
     private lineNumber: number;
     private totalLines: number;
 
+    private _currentCommand: CommandType;
+    private _arg1?: string;
+    private _arg2?: number;
+
     constructor(file: string) {
         this.file = file;
         this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.hack';
@@ -43,32 +48,55 @@ export class VmTranslatorFileParser {
         return this.lineNumber <= this.totalLines-1;
     }
 
-    /* Read the next comamnd from the input and makes it the current command. Should be called only if hasMoreComamnds() is true. Initially
+    /* Read the next comamnd from the input and makes it the current command. 
+       Should be called only if hasMoreComamnds() is true. Initially
        there is no current command
     */ 
     public advance(): void {
+        // TODO: do we still need this.line
         this.line = this.scrub(this.liner.next());
+
+        if (this.line) {
+            let [command, arg1=undefined, arg2=undefined] = this.line.split(' ');
+
+            
+            if (getArithmeticCommands().includes(command)) {
+                this._currentCommand = 'C_ARITHMETIC';
+            } else {
+                // some other kind of command then
+            }
+
+            this._arg1 = arg1;
+            this._arg2 = arg2 ? parseInt(arg2): undefined; 
+    
+            console.log('advance');
+            console.log('');
+            console.log('command ' + command);
+            console.log('arg1 ' + arg1);
+            console.log('arg2 ' + arg2);
+        }
+
+        // TODO: set current command
         this.lineNumber++;
     }
 
     /* Returns the type of the current VM command. C_ARITHMETIC is returned for all the arithmetic commands.
     */
     public commandType(): CommandType  {
-        // TODO: finsih me
-        return 'C_ARITHMETIC';
+        return this._currentCommand;
     }
 
-    /* Returns the first argument of the current command. In the case of C_ARITHMETIC, the command itelsef (add, sub, etc.) is returned.
+    /* Returns the first argument of the current command. In the case of C_ARITHMETIC, the command itself (add, sub, etc.) is returned.
        Should not be called if the current command is C_RETURN */
     public arg1(): string {
-        return 'TODO'; // TODO:
+        return this._arg1;
     }
 
     /*  Returns the second argument of the current command. Should be called only if the current comamnd is C_PUSH, C_POP, C_FUNCTION,
         or C_CALL. 
     */
     public arg2(): number {
-        return 1; // TODO
+        return this._arg2;
     }
 
     // remove comments and empty lines

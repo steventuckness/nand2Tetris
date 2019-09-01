@@ -13,29 +13,15 @@ main();
 function main(): void {
     var file = process.argv[2];
 
-    console.log('test')
-
     const vmTranslatorFileParser = new VmTranslatorFileParser(file);
-    const vmTranslatorCodeWriter = new VmTranslatorCodeWriter(file); // TODO: add name as constructor
+    const vmTranslatorCodeWriter = new VmTranslatorCodeWriter(file);
 
-    let data = '';
 
     while(vmTranslatorFileParser.hasMoreCommands()) {
         vmTranslatorFileParser.advance();
 
-        console.log(vmTranslatorFileParser.line);
-        data += vmTranslatorFileParser.line + '\n';
-    }
-
-    // TODO: blah
-
-    var fs = require("fs");
-
-    fs.writeFileSync(vmTranslatorFileParser.newFile, data, function (err: any) {
-        if (err) {
-            console.log('error: ' + err);
-        } else {
-            console.log("Successfully written to File");
+        if (vmTranslatorFileParser.line) {
+            console.log('debug line: ' + vmTranslatorFileParser.line);
         }
-    });
+    }
 }
