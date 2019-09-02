@@ -6,7 +6,8 @@ import { ArithmeticCommands, getArithmeticCommands } from './vmTranslatorTypes';
 
 const LineByLine = require('n-readlines');
 
-type CommandType = 'C_ARITHMETIC' | 
+type CommandType =     undefined  |
+                   'C_ARITHMETIC' | 
                          'C_PUSH' | 
                           'C_POP' | 
                         'C_LABEL' | 
@@ -18,19 +19,19 @@ type CommandType = 'C_ARITHMETIC' |
 
 export class VmTranslatorFileParser {
     public readonly file: string;
-    public readonly newFile: string;
+    //public readonly newFile: string;
     private liner: any;
     public line: string;
     private lineNumber: number;
     private totalLines: number;
 
     private _currentCommand: CommandType;
-    private _arg1?: string;
-    private _arg2?: number;
+    private _arg1: string = '';
+    private _arg2: number = NaN;
 
     constructor(file: string) {
         this.file = file;
-        this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.hack';
+        // this.newFile = this.file.substring(0, file.lastIndexOf('.')) + '.hack';
         this.line = '';
         this.liner = new LineByLine(file);
         this.totalLines = 0;
@@ -53,30 +54,25 @@ export class VmTranslatorFileParser {
        there is no current command
     */ 
     public advance(): void {
-        // TODO: do we still need this.line
         this.line = this.scrub(this.liner.next());
 
         if (this.line) {
-            let [command, arg1=undefined, arg2=undefined] = this.line.split(' ');
+            let [command, arg1, arg2] = this.line.split(' ');
 
-            
             if (getArithmeticCommands().includes(command)) {
                 this._currentCommand = 'C_ARITHMETIC';
-            } else {
-                // some other kind of command then
+            } else if (command === 'push') {
+                this._currentCommand = 'C_PUSH';
+            } else if (command === 'pop') {
+                this._currentCommand = 'C_POP';
             }
 
-            this._arg1 = arg1;
-            this._arg2 = arg2 ? parseInt(arg2): undefined; 
-    
-            console.log('advance');
-            console.log('');
-            console.log('command ' + command);
-            console.log('arg1 ' + arg1);
-            console.log('arg2 ' + arg2);
+            if (this.commandType() === 'C_PUSH' || this.commandType() === 'C_POP') {
+                this._arg1 = arg1;
+                this._arg2 = parseInt(arg2); 
+            }
         }
 
-        // TODO: set current command
         this.lineNumber++;
     }
 

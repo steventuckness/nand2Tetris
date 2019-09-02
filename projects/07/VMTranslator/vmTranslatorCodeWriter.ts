@@ -1,25 +1,21 @@
 import fs from 'fs'
 import { ArithmeticCommands } from './vmTranslatorTypes';
+import { FileWriter } from './fileWriter';
 
 export class VmTranslatorCodeWriter {
-    private fileName = '';
+    private fileWriter: FileWriter;
     
     /* Opens the output file stream and gets ready to write into it */
     constructor(file: string) {
         // TODO: make this work without sub paths as well
-        this.setFileName(this.getNewFilePath(file));
-
-        console.log(this.fileName);
-
-        fs.writeFileSync(this.fileName, '');
-        fs.appendFileSync(this.fileName, 'test crap 2');
+        this.fileWriter = new FileWriter(this.getNewFilePath(file));
     }
 
     /* Informs the code writer that the translation of a new vm file
        is started */
-    public setFileName(fileName: string): void {
-        this.fileName = fileName;
-    }
+    //public setFileName(fileName: string): void {
+        // this.fileName = fileName;
+    //}
 
     /* Writes the assembly code that is the translation of the given 
        arithmetic command. */
@@ -30,12 +26,39 @@ export class VmTranslatorCodeWriter {
     /* Writes the assembly code that is the translation of the given command, 
        where command is either C_PUSH or C_POP */
     public writePushPop(command: 'C_PUSH' | 'C_POP', segment: string, index: number): void {
-        // TODO:
+        /* todo: handle
+        
+        push X
+        pop 
+        
+        argument 
+        local
+        static
+        constant X
+        this
+        that
+        pointer
+        temp 
+        */
+
+        this.fileWriter.writeLine(`// ${command} ${segment} ${index}`)
+
+        if (segment === 'constant') {
+            this.fileWriter.writeLine(`@${index}`);
+            this.fileWriter.writeLine('D=A');    
+        }
+        
+        if (command === 'C_PUSH') {
+            this.fileWriter.writeLine('@SP');
+            this.fileWriter.writeLine('M=M+1');
+            this.fileWriter.writeLine('A=M');
+            this.fileWriter.writeLine('M=D');
+        }
     }
 
     /* closes the output file */
     public close(): void {
-        fs.closeSync(2);
+        this.fileWriter.close();
     }
 
     private getNewFilePath(file: string): string {
@@ -47,7 +70,7 @@ export class VmTranslatorCodeWriter {
            newFile = file.substring(0, file.lastIndexOf('.'));
        }
 
-       newFile = newFile.concat(newFile, 'asm');
+       newFile = newFile.concat('.asm');
        return newFile;
     }
 }
