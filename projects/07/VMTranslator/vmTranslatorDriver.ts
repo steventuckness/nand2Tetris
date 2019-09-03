@@ -18,17 +18,16 @@ function main(): void {
 
     while(vmTranslatorFileParser.hasMoreCommands()) {
         vmTranslatorFileParser.advance();
+        
+        // TODO: really should encapulate this
+        vmTranslatorFileParser.line ? vmTranslatorCodeWriter.fileWriter.writeLine(`//${vmTranslatorFileParser.line}`): null;
 
         if (vmTranslatorFileParser.commandType() === 'C_PUSH') {
             vmTranslatorCodeWriter.writePushPop('C_PUSH', vmTranslatorFileParser.arg1(), vmTranslatorFileParser.arg2());
         } else if(vmTranslatorFileParser.commandType() === 'C_POP') {
             // TODO:
         } else if (vmTranslatorFileParser.commandType() === 'C_ARITHMETIC') {
-            // TODO:
-        }
-        
-        if (vmTranslatorFileParser.line) {
-            console.log('debug line: ' + vmTranslatorFileParser.line);
+            vmTranslatorCodeWriter.writeArithmetic(vmTranslatorFileParser.arg1());
         }
     }
 

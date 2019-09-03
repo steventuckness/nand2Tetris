@@ -56,11 +56,14 @@ export class VmTranslatorFileParser {
     public advance(): void {
         this.line = this.scrub(this.liner.next());
 
+        console.log(this.line);
+        
         if (this.line) {
             let [command, arg1, arg2] = this.line.split(' ');
 
             if (getArithmeticCommands().includes(command)) {
                 this._currentCommand = 'C_ARITHMETIC';
+                this._arg1 = command;
             } else if (command === 'push') {
                 this._currentCommand = 'C_PUSH';
             } else if (command === 'pop') {

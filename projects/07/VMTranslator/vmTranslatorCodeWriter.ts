@@ -1,15 +1,14 @@
-import fs from 'fs'
 import { ArithmeticCommands } from './vmTranslatorTypes';
 import { FileWriter } from './fileWriter';
 
 export class VmTranslatorCodeWriter {
-    private fileWriter: FileWriter;
+    public fileWriter: FileWriter;
     
     /* Opens the output file stream and gets ready to write into it */
     constructor(file: string) {
         // TODO: make this work without sub paths as well
         this.fileWriter = new FileWriter(this.getNewFilePath(file));
-    }
+    }      
 
     /* Informs the code writer that the translation of a new vm file
        is started */
@@ -19,8 +18,37 @@ export class VmTranslatorCodeWriter {
 
     /* Writes the assembly code that is the translation of the given 
        arithmetic command. */
-    public writeArithmetic(command: ArithmeticCommands): void {
+    // ArithmeticCommands
+    public writeArithmetic(command: string): void {
         // TODO: add type...
+        /*
+        
+        add / - need to test
+        sub
+        neg
+        eq
+        gt
+        lt
+         
+        or
+        not
+        */
+
+        if (command === 'add') {
+          // assumes constants...
+          
+          this.fileWriter.writeLine('@SP');   // select sp
+          this.fileWriter.writeLine('A=M')    // select memory location sp is pointing at
+          this.fileWriter.writeLine('D=M');   // store the value from the memory location we are at
+          this.fileWriter.writeLine('M=0');   // might not be super imporant to clear this
+          
+          this.fileWriter.writeLine('@SP');   // select sp again
+          this.fileWriter.writeLine('M=M-1'); // decrement the sp
+          this.fileWriter.writeLine('A=M');   
+          this.fileWriter.writeLine('M=A');
+          this.fileWriter.writeLine('D=D+M');
+          this.fileWriter.writeLine('M=D');
+        }
     }
 
     /* Writes the assembly code that is the translation of the given command, 
@@ -41,18 +69,20 @@ export class VmTranslatorCodeWriter {
         temp 
         */
 
-        this.fileWriter.writeLine(`// ${command} ${segment} ${index}`)
+        console.log(command);
+        console.log(segment);
 
         if (segment === 'constant') {
             this.fileWriter.writeLine(`@${index}`);
-            this.fileWriter.writeLine('D=A');    
+            this.fileWriter.writeLine('D=A');
         }
         
         if (command === 'C_PUSH') {
-            this.fileWriter.writeLine('@SP');
-            this.fileWriter.writeLine('M=M+1');
-            this.fileWriter.writeLine('A=M');
-            this.fileWriter.writeLine('M=D');
+            this.fileWriter.writeLine('@SP');      // select stack pointer
+            this.fileWriter.writeLine('A=M');      // set address to stack pointer memory
+            this.fileWriter.writeLine('M=D');      // set memory value to D (constant)
+            this.fileWriter.writeLine('@SP');      // select stack pointer again..
+            this.fileWriter.writeLine('M=M+1');    // increment the stack pointer
         }
     }
 
