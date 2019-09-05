@@ -35,19 +35,19 @@ export class VmTranslatorCodeWriter {
         */
 
         if (command === 'add') {
-          // assumes constants...
-          
+          // assumes constants...          
           this.fileWriter.writeLine('@SP');   // select sp
-          this.fileWriter.writeLine('A=M')    // select memory location sp is pointing at
-          this.fileWriter.writeLine('D=M');   // store the value from the memory location we are at
-          this.fileWriter.writeLine('M=0');   // might not be super imporant to clear this
-          
+          this.fileWriter.writeLine('M=M-1')  // move up in memory to the expected address for the first number
+          this.fileWriter.writeLine('A=M');   // go to the address stored in memroy
+          this.fileWriter.writeLine('D=M');   // set the first number to add in the D register
+          this.fileWriter.writeLine('M=0');
+
           this.fileWriter.writeLine('@SP');   // select sp again
           this.fileWriter.writeLine('M=M-1'); // decrement the sp
-          this.fileWriter.writeLine('A=M');   
-          this.fileWriter.writeLine('M=A');
-          this.fileWriter.writeLine('D=D+M');
-          this.fileWriter.writeLine('M=D');
+          this.fileWriter.writeLine('A=M');   // go to the address for the 2nd number to add
+          this.fileWriter.writeLine('M=M+D'); // add number with the new number
+          this.fileWriter.writeLine('@SP');
+          this.fileWriter.writeLine('M=M+1'); // set the sp back to 1 after
         }
     }
 

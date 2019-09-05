@@ -16,12 +16,13 @@ M=D
 M=M+1
 //add
 @SP
+M=M-1
 A=M
 D=M
 M=0
 @SP
 M=M-1
 A=M
-M=A
-D=D+M
-M=D
+M=M+D
+@SP
+M=M+1
